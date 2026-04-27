@@ -14,9 +14,6 @@
 ---
 
 ## Project Description
-Provide a short explanation of what the program does.
-
-Example:
 This project implements a simple cyber risk prioritization and treatment tool.
 The program reads input data describing assets, threat scenarios, and security controls.
 For each scenario, it computes the initial risk and the residual risk after applying the deployed controls.
@@ -43,7 +40,7 @@ The program produces a JSON output containing:
 ---
 
 ## Python Version
-Python 3.11
+Python 3.13
 
 ---
 
