@@ -5,12 +5,11 @@
 ---
 
 ## Group Members
-Write here the name, surname, and student ID of all group members.
 
-Example:
-- Name Surname -- s123456
-- Name Surname -- s234567
-- Name Surname -- s345678
+- Sonja Shkembi -- s320526
+- Eleonora Accatino -- s
+- Thomas Sabena -- s
+- Helya ... -- s
 
 ---
 
@@ -18,41 +17,39 @@ Example:
 Provide a short explanation of what the program does.
 
 Example:
-This project implements a simple authorization engine.
-The program reads JSON input files, evaluates the requests according to the given policies, and produces a JSON output containing the final decision for each request.
+This project implements a simple cyber risk prioritization and treatment tool.
+The program reads input data describing assets, threat scenarios, and security controls.
+For each scenario, it computes the initial risk and the residual risk after applying the deployed controls.
+If the residual risk exceeds the acceptable threshold defined for the asset, the program recommends additional controls using a greedy strategy.
+
+The program produces a JSON output containing:
+- risk evaluation for each scenario
+- recommended controls (if needed)
+- a summary of the overall analysis
 
 ---
 
 ## Project Structure
-Describe briefly the files and folders included in the submission.
-
-Example:
-- `main.py`: main program
+- `main.py`: main program that executes the analysis
 - `src/`: Python modules used by the program
-- `input/`: example input files
-- `output/`: example output files
+    - `src/loader.py`: Python modules used by the program
+- `input/`: input JSON files
+    - `src/assets.json`
+    - `src/scenarios.json`
+    - `src/security_controls.json`
+- `output/`: generated output JSON file
 - `requirements.txt`: list of required Python libraries
 
 ---
 
 ## Python Version
-Specify the Python version used for the project.
-
-Example:
 Python 3.11
 
 ---
 
 ## Required Libraries
-Explain whether the project uses only the Python standard library or also external libraries.
-
-Example 1:
 This project uses only the Python standard library.
 
-Example 2:
-This project requires the libraries listed in `requirements.txt`.
-
----
 
 ## Creating a Virtual Environment
 A virtual environment is recommended in order to install the project libraries in an isolated way.
