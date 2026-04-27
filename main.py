@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.loader import load_json
+from src.loader import load_json, build_asset_dict, build_control_dict, extract_scenarios
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -19,7 +19,16 @@ def main():
     controls = load_json(input_dir / "security_controls.json")
     scenarios = load_json(input_dir / "scenarios.json")
 
-    result = {} # analyze_scenarios
+    asset_dict = build_asset_dict(assets)
+    control_dict = build_control_dict(controls)
+    scenarios = extract_scenarios(scenarios)
+
+    # quick test just to check if the loading was successful, has to be changed later
+    result = {
+        "assets": len(asset_dict),
+    "controls": len(control_dict),
+    "scenarios": len(scenarios)
+    } # analyze_scenarios
 
     
     output_path = Path(args.output)
