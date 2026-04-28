@@ -9,7 +9,7 @@
 - Sonja Shkembi -- s320526
 - Eleonora Accatino -- s
 - Thomas Sabena -- s
-- Helya ... -- s
+- Helya Pourkarim Kashki -- s320871
 
 ---
 
