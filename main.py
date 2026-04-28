@@ -2,11 +2,10 @@ import argparse
 import json
 from pathlib import Path
 
-from output import build_output
-from src.Risk_controls import compute_risk 
-from Risk_controls import recommend_controls
-from src.risk import analyze_risks
-from src.loader import load_json 
+from src.output import build_output
+from src.Risk_controls import recommend_controls
+from src.risk import analyze_risks, analyze_scenario
+from src.loader import load_json, build_asset_dict, build_control_dict, extract_scenarios
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -23,15 +22,7 @@ def main():
     controls = load_json(input_dir / "security_controls.json")
     scenarios = load_json(input_dir / "scenarios.json")
 
-    #risk results:
-    result = analyze_risks(
-        assets,
-        scenarios,
-        controls
-    )
-    from loader import load_json, build_asset_dict, build_control_dict, extract_scenarios
-
-    assets_by_id   = build_asset_dict(assets)
+    assets_by_id = build_asset_dict(assets)
     controls_by_id = build_control_dict(controls)
     scenarios_list = extract_scenarios(scenarios)
     scenario_results = []
@@ -40,18 +31,8 @@ def main():
         asset_id = scenario.get("asset_id")
         asset = assets_by_id.get(asset_id)
 
-        result = compute_risk(scenario, asset, controls_by_id) 
+        result = analyze_scenario(scenario, assets_by_id, controls_by_id, list(controls_by_id.values()))
 
-        if result.get("status") == "not_acceptable": 
-            recommendation = recommend_controls(
-            scenario,
-            result["residual_likelihood"],
-            result["residual_impact"],
-            result["acceptable_threshold"],
-            controls_by_id,
-        )
-            
-        result.update(recommendation)
         scenario_results.append(result)
     
     final_output = build_output(scenario_results)
