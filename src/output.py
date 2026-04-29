@@ -1,14 +1,21 @@
-def sort_and_prioritize(validResults: list) -> list:
+def sort_and_prioritize(valid_results: list) -> list:
+    """
+    Sorts scenarios such that:
+    - not_acceptable ones come first
+    - higher residual risk comes before lower residual risk
+    - each scenario gets a priority number (1 = most urgent)
+    """
+
     def sort_key(s):
-        if s.get("status")=="acceptable": 
-            acceptability_rank = 1
-        else:
-            acceptability_rank = 0
-        residual_risk = -s.get("residual_risk", 0)  
-        return (acceptability_rank, residual_risk, s["scenario_id"]) 
+        # not_acceptable = 0, acceptable = 1 → not_acceptable sorts first
+        acceptability_rank = 0 if s.get("status") == "not_acceptable" else 1
+        # negate so higher risk sorts first
+        residual_risk = -s.get("residual_risk", 0)
+        return (acceptability_rank, residual_risk)
 
-    sorted_results = sorted(validResults, key=sort_key)
+    sorted_results = sorted(valid_results, key=sort_key)
 
+    # assign priority based on position (1 = most urgent)
     for rank, scenario in enumerate(sorted_results, start=1):
         scenario["priority"] = rank
 
@@ -16,38 +23,29 @@ def sort_and_prioritize(validResults: list) -> list:
 
 
 def compute_summary(all_scenarios: list) -> dict:
-    total = len(all_scenarios)
+    """
+    Builds a summary of the analysis.
 
-    count = 0
-    for s in all_scenarios:
-        if s.get("status") == "invalid":
-            count += 1
-    invalid_count = count
+    Fix: total_scenarios now counts ALL scenarios (including invalid),
+    matching the spec example where total = 7 even with invalid entries.
+    """
 
-    count = 0
-    for s in all_scenarios:
-        if s.get("status")=="acceptable":
-            count += 1
-    acceptable_count = count
+    total = len(all_scenarios)  # all scenarios, not just valid ones
 
-    count = 0
-    for s in all_scenarios:
-        if s.get("status")=="not_acceptable":
-            count += 1
-    not_acceptable_count = count
+    acceptable_count = sum(
+        1 for s in all_scenarios if s.get("status") == "acceptable"
+    )
+    not_acceptable_count = sum(
+        1 for s in all_scenarios if s.get("status") == "not_acceptable"
+    )
 
-    valid_risks = []
-    for s in all_scenarios:
-        if s.get("status")!="invalid":
-            valid_risks.append(s.get("residual_risk", 0))
-
-    if len(valid_risks) > 0:
-        highest = valid_risks[0]
-        for risk in valid_risks:
-            if risk > highest:
-                highest = risk
-    else:
-        highest = 0
+    # highest residual risk only among valid scenarios (invalid have None)
+    valid_risks = [
+        s["residual_risk"]
+        for s in all_scenarios
+        if s.get("residual_risk") is not None
+    ]
+    highest = max(valid_risks) if valid_risks else 0
 
     return {
         "total_scenarios": total,
@@ -56,23 +54,35 @@ def compute_summary(all_scenarios: list) -> dict:
         "highest_residual_risk": highest,
     }
 
+
 def build_output(scenario_results: list) -> dict:
+    """
+    Builds the final output.
+    Separates valid and invalid scenarios.
+    Sorts valid ones by priority.
+    Appends invalid ones at the end (no priority assigned).
+    Computes summary over all scenarios.
+    """
+
     valid_scenarios = []
     invalid_scenarios = []
-    
+
     for s in scenario_results:
         if s.get("status") == "invalid":
             invalid_scenarios.append(s)
         else:
             valid_scenarios.append(s)
-    
+
+    # sort only valid scenarios (invalid ones stay at the end)
     sorted_valid = sort_and_prioritize(valid_scenarios)
 
+    # invalid scenarios get no priority
     for s in invalid_scenarios:
         s["priority"] = None
 
     all_scenarios = sorted_valid + invalid_scenarios
 
+    # summary is computed over everything
     summary = compute_summary(all_scenarios)
 
     return {
