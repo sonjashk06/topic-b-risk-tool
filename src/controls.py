@@ -13,6 +13,7 @@ def recommend_controls(
     - add them one by one until the risk is acceptable
     """
 
+    # start from the original values
     original_likelihood = scenario["likelihood"]
     original_impact = scenario["impact"]
 
@@ -24,8 +25,7 @@ def recommend_controls(
         if cid in controls_by_id
     ]
 
-    # compute current residual risk using the shared function from risk.py
-    # (previously there was a duplicate inner function here — now removed)
+    #Compute the current residual risk after deployed controls
     _, _, current_residual_risk = compute_residual_risk(
         original_likelihood, original_impact, active_controls
     )
@@ -41,8 +41,8 @@ def recommend_controls(
     threat_type = scenario["threat"]
 
     # select controls that:
-    # - apply to this threat
-    # - are NOT already deployed
+    # -apply to this threat
+    # -are NOT already deployed
     candidate_controls = [
         control
         for control in controls_by_id.values()
@@ -64,10 +64,12 @@ def recommend_controls(
         active_controls.append(control)
         recommended_control_names.append(control["name"])
 
+        # recompute the risk with all controls applied so far
         _, _, updated_risk = compute_residual_risk(
             original_likelihood, original_impact, active_controls
         )
 
+        # as soon as the risk becomes acceptable, we stop
         if updated_risk <= asset_threshold:
             break
 
