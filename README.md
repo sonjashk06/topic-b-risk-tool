@@ -62,6 +62,7 @@ We all worked together on refining the code structure, improving readability, an
 
 ---
 ## Notes
+- Check output.json correctness
 - Invalid scenarios(unknown assets or controls) are handled and reported
 - Empty control lists handled correctly.
 - Risk values do not go below 1.
