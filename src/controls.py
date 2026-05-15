@@ -1,11 +1,10 @@
 from src.risk import compute_residual_risk
 
-
 def recommend_controls(
     scenario: dict,
     asset_threshold: int,
     controls_by_id: dict,
-) -> dict:
+    ) -> dict:
     """
     If the current risk is too high, try to fix it by adding controls.
     - take controls that match the threat
@@ -17,7 +16,7 @@ def recommend_controls(
     original_likelihood = scenario["likelihood"]
     original_impact = scenario["impact"]
 
-    # controls already deployed in this scenario (only valid ones)
+    # controls already deployed in this scenario
     already_deployed_control_ids = set(scenario.get("deployed_controls", []))
     active_controls = [
         controls_by_id[cid]
@@ -26,7 +25,7 @@ def recommend_controls(
     ]
 
     #Compute the current residual risk after deployed controls
-    _, _, current_residual_risk = compute_residual_risk(
+    current_residual_risk = compute_residual_risk(
         original_likelihood, original_impact, active_controls
     )
 
@@ -40,9 +39,9 @@ def recommend_controls(
 
     threat_type = scenario["threat"]
 
-    # select controls that:
+    # Select controls that:
     # -apply to this threat
-    # -are NOT already deployed
+    # -are not already deployed
     candidate_controls = [
         control
         for control in controls_by_id.values()
@@ -59,13 +58,13 @@ def recommend_controls(
     recommended_control_names = []
     updated_risk = current_residual_risk
 
-    # add controls one by one (greedy approach)
+    #add controls one by one
     for control in candidate_controls:
         active_controls.append(control)
         recommended_control_names.append(control["name"])
 
         # recompute the risk with all controls applied so far
-        _, _, updated_risk = compute_residual_risk(
+        updated_risk = compute_residual_risk(
             original_likelihood, original_impact, active_controls
         )
 

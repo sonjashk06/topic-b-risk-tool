@@ -22,4 +22,4 @@ def compute_residual_risk(likelihood, impact, controls):
     #final residual risk
     residual_risk = residual_likelihood * residual_impact
 
-    return residual_likelihood, residual_impact, residual_risk
+    return residual_risk

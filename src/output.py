@@ -3,11 +3,11 @@ def sort_and_prioritize(valid_results: list) -> list:
     Sorts scenarios such that:
     - not_acceptable ones come first
     - higher residual risk comes before lower residual risk
-    - each scenario gets a priority number (1 = most urgent)
+    - each scenario gets a priority number (1=most urgent)
     """
 
     def sort_key(s):
-        # not_acceptable = 0, acceptable = 1 → not_acceptable sorts first
+        # not_acceptable=0, acceptable=1 -> not_acceptable sorts first
         acceptability_rank = 0 if s.get("status") == "not_acceptable" else 1
         # negate so higher risk sorts first
         residual_risk = -s.get("residual_risk", 0)
@@ -15,7 +15,7 @@ def sort_and_prioritize(valid_results: list) -> list:
 
     sorted_results = sorted(valid_results, key=sort_key)
 
-    # assign priority based on position (1 = most urgent)
+    #assign priority based on position (1=most urgent)
     for rank, scenario in enumerate(sorted_results, start=1):
         scenario["priority"] = rank
 
@@ -25,9 +25,6 @@ def sort_and_prioritize(valid_results: list) -> list:
 def compute_summary(all_scenarios: list) -> dict:
     """
     Builds a summary of the analysis.
-
-    Fix: total_scenarios now counts ALL scenarios (including invalid),
-    matching the spec example where total = 7 even with invalid entries.
     """
 
     total = len(all_scenarios)  # all scenarios, not just valid ones
@@ -39,7 +36,7 @@ def compute_summary(all_scenarios: list) -> dict:
         1 for s in all_scenarios if s.get("status") == "not_acceptable"
     )
 
-    # highest residual risk only among valid scenarios (invalid have None)
+    #highest residual risk only among valid scenarios
     valid_risks = [
         s["residual_risk"]
         for s in all_scenarios
@@ -60,7 +57,7 @@ def build_output(scenario_results: list) -> dict:
     Builds the final output.
     Separates valid and invalid scenarios.
     Sorts valid ones by priority.
-    Appends invalid ones at the end (no priority assigned).
+    Appends invalid ones at the end.
     Computes summary over all scenarios.
     """
 
@@ -73,7 +70,7 @@ def build_output(scenario_results: list) -> dict:
         else:
             valid_scenarios.append(s)
 
-    # sort only valid scenarios (invalid ones stay at the end)
+    # sort only valid scenarios(invalid ones stay at the end)
     sorted_valid = sort_and_prioritize(valid_scenarios)
 
     # invalid scenarios get no priority
@@ -82,7 +79,7 @@ def build_output(scenario_results: list) -> dict:
 
     all_scenarios = sorted_valid + invalid_scenarios
 
-    # summary is computed over everything
+    #summary is computed over everything
     summary = compute_summary(all_scenarios)
 
     return {

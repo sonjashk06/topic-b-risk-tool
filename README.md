@@ -39,7 +39,7 @@ The program produces a JSON output containing:
 - `src/`: Python modules used by the program
     - `src/loader.py`: loads and prepares input data
     - `src/risk.py`: risk computation logic
-    - `src/controls.py`: reccomends controls if needed
+    - `src/controls.py`: recommends controls if needed
     - `src/analysis.py`: analysis of all scenarios
     - `src/output.py`: formatting and summary of the result
 - `input/`: input JSON files
@@ -59,13 +59,6 @@ The work was divided among the group members as follows:
 - Eleonora - Main logic and output formatting
 
 We all worked together on refining the code structure, improving readability, and ensuring there was no duplicated logic or unnecessary code.
-
----
-## Notes
-- Check output.json correctness
-- Invalid scenarios(unknown assets or controls) are handled and reported
-- Empty control lists handled correctly.
-- Risk values do not go below 1.
 
 ---
 

@@ -11,10 +11,10 @@ def analyze_scenario(s, assets_by_id, controls_by_id):
     - suggest fixes if needed
     """
 
-    # find the asset linked to this scenario
+    #find the asset linked to this scenario
     asset = assets_by_id.get(s["asset_id"])
 
-    # if the asset doesn't exist, we cannot analyse that scenario
+    #if the asset doesn't exist, we cannot analyse that scenario
     if not asset:
         return {
             "scenario_id": s["id"],
@@ -33,7 +33,7 @@ def analyze_scenario(s, assets_by_id, controls_by_id):
             "priority": None,
         }
 
-    # get the list of control IDs already applied
+    #get the list of control IDs already applied
     deployed_ids = s.get("deployed_controls", [])
     deployed_controls = [
         controls_by_id[c] for c in deployed_ids if c in controls_by_id
@@ -46,7 +46,7 @@ def analyze_scenario(s, assets_by_id, controls_by_id):
     initial_risk = compute_initial_risk(s["likelihood"], s["impact"])
 
     # risk after applying the deployed controls
-    rl, ri, residual_risk = compute_residual_risk(
+    residual_risk = compute_residual_risk(
         s["likelihood"], s["impact"], deployed_controls
     )
 
@@ -62,10 +62,9 @@ def analyze_scenario(s, assets_by_id, controls_by_id):
         }
     else:
         status = "not_acceptable"
-        # updated call: removed the dead rl, ri arguments
         recommendation = recommend_controls(s, threshold, controls_by_id)
 
-    # final result for this scenario
+    #final result for this scenario
     result = {
         "scenario_id": s["id"],
         "asset_id": asset["id"],
@@ -80,7 +79,7 @@ def analyze_scenario(s, assets_by_id, controls_by_id):
         **recommendation,
     }
 
-    # include unknown controls if there are any
+    #include unknown controls if there are any
     if unknown_controls:
         result["invalid_references"] = unknown_controls
 
